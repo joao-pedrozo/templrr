@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import * as htmlToImage from "html-to-image";
 
 export default function Component() {
   const [background, setBackground] = useState("#f0f0f0");
@@ -28,6 +29,7 @@ export default function Component() {
   const handleBackgroundChange = (e) => setBackground(e.target.value);
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleSubtitleChange = (e) => setSubtitle(e.target.value);
+  const previewRef = useRef(null);
 
   const handleImageUploadButtonClick = (event) => {
     hiddenFileInput.current.click();
@@ -57,6 +59,15 @@ export default function Component() {
     "#0f0f0f", // Orange
   ];
 
+  const handleDownload = () => {
+    htmlToImage.toPng(previewRef.current).then(function (dataUrl) {
+      var link = document.createElement("a");
+      link.download = "thumbnail.png";
+      link.href = dataUrl;
+      link.click();
+    });
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-muted">
       <div className="bg-background rounded-lg shadow-lg p-8 w-full max-w-2xl">
@@ -64,7 +75,10 @@ export default function Component() {
           Open Source Thumbnail Generator
         </h1>
         <div className="mb-8">
-          <div className="relative w-full max-w-[600px] mx-auto rounded-lg overflow-hidden aspect-[16/9]">
+          <div
+            ref={previewRef}
+            className="relative w-full max-w-[600px] mx-auto rounded-lg overflow-hidden aspect-[16/9]"
+          >
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
@@ -177,18 +191,10 @@ export default function Component() {
               </div>
             </div>
           </div>
-          {/* <div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline">
-                <DownloadIcon className="w-4 h-4 mr-2" />
-                Download
-              </Button>
-              <Button>
-                <ShareIcon className="w-4 h-4 mr-2" />
-                Share
-              </Button>
-            </div>
-          </div> */}
+          <Button variant="outline" onClick={handleDownload}>
+            <DownloadIcon className="w-4 h-4 mr-2" />
+            Download
+          </Button>
         </div>
       </div>
     </div>
