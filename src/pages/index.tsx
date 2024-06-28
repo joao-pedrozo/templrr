@@ -192,7 +192,14 @@ export default function Component() {
               </div>
             </div>
           </div>
-          <Button variant="outline" onClick={handleDownload}>
+          <Button
+            variant="outline"
+            onClick={handleDownload}
+            style={{
+              backgroundColor: themeColor,
+              color: "white",
+            }}
+          >
             <DownloadIcon className="w-4 h-4 mr-2" />
             Download
           </Button>
