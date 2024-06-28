@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import Image from "next/image";
 import * as htmlToImage from "html-to-image";
 
 export default function Component() {
@@ -70,9 +71,9 @@ export default function Component() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-muted">
-      <div className="bg-background rounded-lg shadow-lg p-8 w-full max-w-2xl">
-        <h1 className="text-2xl font-bold mb-4">
-          Open Source Thumbnail Generator
+      <div className="bg-background rounded-lg shadow-lg p-8 w-full max-w-2xl my-8 flex flex-col">
+        <h1 className="text-2xl font-bold mb-6 w-fit self-center">
+          <Image src="/logo.png" alt="Templrrr logo" width={180} height={180} />
         </h1>
         <div className="mb-8">
           <div
