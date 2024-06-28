@@ -1,14 +1,40 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/C6N83aI7wrP
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
+import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Component() {
+  const [background, setBackground] = useState("#f0f0f0");
+  const [image, setImage] = useState(null);
+  const [title, setTitle] = useState("React Hooks");
+  const [subtitle, setSubtitle] = useState("Powerful state management");
+  const [techStack, setTechStack] = useState({
+    react: true,
+    typescript: false,
+    tailwind: false,
+    next: false,
+    node: false,
+    firebase: false,
+  });
+
+  const handleBackgroundChange = (e) => setBackground(e.target.value);
+  const handleTitleChange = (e) => setTitle(e.target.value);
+  const handleSubtitleChange = (e) => setSubtitle(e.target.value);
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(URL.createObjectURL(file));
+    }
+  };
+
+  const handleTechStackChange = (tech: string) => {
+    setTechStack((prev) => ({
+      ...prev,
+      [tech]: !prev[tech],
+    }));
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-muted">
       <div className="bg-background rounded-lg shadow-lg p-8 w-full max-w-2xl">
@@ -20,25 +46,29 @@ export default function Component() {
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
-                backgroundImage:
-                  "url(https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80)",
+                backgroundImage: image
+                  ? `url(${image})`
+                  : `url(https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80)`,
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 flex flex-col justify-end p-6">
-              <h2 className="text-3xl font-bold text-white mb-2">
-                React Hooks
-              </h2>
-              <p className="text-lg text-white/80">Powerful state management</p>
+            <div
+              className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 flex flex-col justify-end p-6"
+              // style={{ backgroundColor: background }}
+            >
+              <h2 className="text-3xl font-bold text-white mb-2">{title}</h2>
+              <p className="text-lg text-white/80">{subtitle}</p>
               <div className="flex items-center gap-2 mt-4">
-                <div className="bg-primary rounded-full px-3 py-1 text-primary-foreground text-sm font-medium">
-                  React
-                </div>
-                <div className="bg-primary rounded-full px-3 py-1 text-primary-foreground text-sm font-medium">
-                  TypeScript
-                </div>
-                <div className="bg-primary rounded-full px-3 py-1 text-primary-foreground text-sm font-medium">
-                  Tailwind CSS
-                </div>
+                {Object.keys(techStack).map(
+                  (tech) =>
+                    techStack[tech] && (
+                      <div
+                        key={tech}
+                        className="bg-primary rounded-full px-3 py-1 text-primary-foreground text-sm font-medium"
+                      >
+                        {tech.charAt(0).toUpperCase() + tech.slice(1)}
+                      </div>
+                    )
+                )}
               </div>
             </div>
           </div>
@@ -52,11 +82,18 @@ export default function Component() {
                   id="background"
                   type="color"
                   className="w-16 h-16 p-0 border-none rounded-full"
-                  defaultValue="#f0f0f0"
+                  value={background}
+                  onChange={handleBackgroundChange}
                 />
-                <Button variant="outline">
+                <Button variant="outline" as="label">
                   <UploadIcon className="w-4 h-4 mr-2" />
                   Upload Image
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
                 </Button>
               </div>
             </div>
@@ -67,7 +104,8 @@ export default function Component() {
                 type="text"
                 placeholder="Enter a title"
                 className="w-full"
-                defaultValue="React Hooks"
+                value={title}
+                onChange={handleTitleChange}
               />
             </div>
             <div className="mb-4">
@@ -77,7 +115,8 @@ export default function Component() {
                 type="text"
                 placeholder="Enter a subtitle"
                 className="w-full"
-                defaultValue="Powerful state management"
+                value={subtitle}
+                onChange={handleSubtitleChange}
               />
             </div>
           </div>
@@ -85,14 +124,16 @@ export default function Component() {
             <div className="mb-4">
               <Label>Tech Stack</Label>
               <div className="grid grid-cols-3 gap-2">
-                <Checkbox id="react" defaultChecked>
-                  React
-                </Checkbox>
-                <Checkbox id="typescript">TypeScript</Checkbox>
-                <Checkbox id="tailwind">Tailwind CSS</Checkbox>
-                <Checkbox id="next">Next.js</Checkbox>
-                <Checkbox id="node">Node.js</Checkbox>
-                <Checkbox id="firebase">Firebase</Checkbox>
+                {Object.keys(techStack).map((tech) => (
+                  <label key={tech} className="flex items-center gap-2">
+                    <Checkbox
+                      id={tech}
+                      checked={techStack[tech]}
+                      onCheckedChange={() => handleTechStackChange(tech)}
+                    />
+                    {tech.charAt(0).toUpperCase() + tech.slice(1)}
+                  </label>
+                ))}
               </div>
             </div>
             <div className="flex justify-end gap-2">
