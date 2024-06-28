@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,23 +21,41 @@ export default function Component() {
     postgres: false,
     redis: false,
   });
+  const [themeColor, setThemeColor] = useState("#000000");
+
+  const hiddenFileInput = useRef(null);
 
   const handleBackgroundChange = (e) => setBackground(e.target.value);
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleSubtitleChange = (e) => setSubtitle(e.target.value);
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
+
+  const handleImageUploadButtonClick = (event) => {
+    hiddenFileInput.current.click();
+  };
+
+  const handleChange = (event) => {
+    const file = event.target.files[0];
+
     if (file) {
       setImage(URL.createObjectURL(file));
     }
   };
 
-  const handleTechStackChange = (tech: string) => {
+  const handleTechStackChange = (tech) => {
     setTechStack((prev) => ({
       ...prev,
       [tech]: !prev[tech],
     }));
   };
+
+  const themeColors = [
+    "#1953ff", // Blue
+    "#ffda24", // Yellow
+    "#32CD32", // Green
+    "#FF4500", // Red
+    "#800080", // Purple
+    "#0f0f0f", // Orange
+  ];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-muted">
@@ -67,7 +85,8 @@ export default function Component() {
                     techStack[tech] && (
                       <div
                         key={tech}
-                        className="bg-primary rounded-full px-3 py-1 text-primary-foreground text-sm font-medium"
+                        className="rounded-full px-3 py-1 text-primary-foreground text-sm font-medium"
+                        style={{ backgroundColor: themeColor }}
                       >
                         {tech.charAt(0).toUpperCase() + tech.slice(1)}
                       </div>
@@ -79,26 +98,44 @@ export default function Component() {
         </div>
         <div className="grid grid-cols-1 gap-6">
           <div>
-            <div className="mb-4">
-              <Label htmlFor="background">Background</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="background"
-                  type="color"
-                  className="w-16 h-16 p-0 border-none rounded-full"
-                  value={background}
-                  onChange={handleBackgroundChange}
-                />
-                <Button variant="outline" as="label">
-                  <UploadIcon className="w-4 h-4 mr-2" />
-                  Upload Image
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
+            <div className="mb-4 flex justify-between items-center">
+              <div>
+                <Label htmlFor="background">Background</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="background"
+                    type="color"
+                    className="w-16 h-16 p-0 border-none rounded-full"
+                    value={background}
+                    onChange={handleBackgroundChange}
                   />
-                </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleImageUploadButtonClick}
+                  >
+                    <UploadIcon className="w-4 h-4 mr-2" />
+                    Upload Image
+                    <input
+                      type="file"
+                      onChange={handleChange}
+                      ref={hiddenFileInput}
+                      className="hidden"
+                    />
+                  </Button>
+                </div>
+              </div>
+              <div className="text-center">
+                <Label>Theme Color</Label>
+                <div className="grid mt-1 gap-2 grid-rows-2 grid-cols-3">
+                  {themeColors.map((color) => (
+                    <button
+                      key={color}
+                      style={{ backgroundColor: color }}
+                      className="w-8 h-8 rounded-full border border-gray-200"
+                      onClick={() => setThemeColor(color)}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
             <div className="mb-4">
@@ -123,6 +160,7 @@ export default function Component() {
                 onChange={handleSubtitleChange}
               />
             </div>
+
             <div className="mb-4">
               <Label>Tech Stack</Label>
               <div className="grid grid-cols-3 gap-2">
