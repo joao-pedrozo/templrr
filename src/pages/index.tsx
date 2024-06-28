@@ -16,6 +16,10 @@ export default function Component() {
     next: false,
     node: false,
     firebase: false,
+    graphql: false,
+    mongoDB: false,
+    postgres: false,
+    redis: false,
   });
 
   const handleBackgroundChange = (e) => setBackground(e.target.value);
@@ -73,7 +77,7 @@ export default function Component() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <div>
             <div className="mb-4">
               <Label htmlFor="background">Background</Label>
@@ -119,8 +123,6 @@ export default function Component() {
                 onChange={handleSubtitleChange}
               />
             </div>
-          </div>
-          <div>
             <div className="mb-4">
               <Label>Tech Stack</Label>
               <div className="grid grid-cols-3 gap-2">
@@ -136,6 +138,8 @@ export default function Component() {
                 ))}
               </div>
             </div>
+          </div>
+          {/* <div>
             <div className="flex justify-end gap-2">
               <Button variant="outline">
                 <DownloadIcon className="w-4 h-4 mr-2" />
@@ -146,7 +150,7 @@ export default function Component() {
                 Share
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
